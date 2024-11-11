@@ -19,6 +19,7 @@ SHELL="/bin/bash"
 GROUPS=""
 
 # option u for username, s for shell, g for groups, with erroring check option
+#https://dev.to/amaraiheanacho/user-creation-in-bash-script-1617
 while getopts ":u:s:g:" opt; do
   case $opt in
     u) USERNAME="$OPTARG"  # for the username
