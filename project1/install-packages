@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Define function to install packages from install-packages file
+
+install-packages() {
+
+  # This will read all the lines in the install-packages file
+
+  while read -r package; do
+
+    #This will install the packages and skip install confirmations for pacman 
+
+    if pacman -S --noconfirm "$package"; then
+
+      echo "$package installed successfully"
+
+    else
+
+      echo "$package failed to install"
+
+      #error indicator in case installation fails
+
+      exit 1
+
+    fi
+
+  # retrieves content from install-packages to be used as input in this while loop
+
+  done < ./install-packages  
+}
+
+# this invokes install-packages function to start the installation process
+
+install-packages
+
