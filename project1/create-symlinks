@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Check if the script is run with sudo or root
+if [[ "$EUID" -ne 0 ]]; then
+  echo "Please run this script with sudo"
+  exit 1
+fi
+
+# Define the directory where the configuration files are located if they are cloned in the home directory
+# eval is a command that ensures the shell correctly expands ~$SUDO_USER to the user's home directory
+home_user=$(eval echo ~$SUDO_USER)
+config_dir="$home_user/config-files"
+
+# Checks if the configuration files are cloned
+if [[ ! -d "$config_dir" ]]; then
+  echo "Configuration files not found. Please clone the repository first."
+  exit 1
+fi
+
+# Create symbolic links for the files in the config directory
+ln -sf "$config_dir/config/kak/kakrc" "$home_user/.config/kak/kakrc"
+ln -sf "$config_dir/config/tmux/tmux.conf" "$home_user/.config/tmux/tmux.conf"
+ln -sf "$config_dir/home/bashrc" "$home_user/.bashrc"
+ln -sf "$config_dir/bin" "$home_user/bin"
+
+echo "Symbolic links are created successfully."
+

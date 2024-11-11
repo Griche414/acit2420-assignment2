@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Check if the script is run with sudo or root
+if [[ "$EUID" -ne 0 ]]; then
+  echo "Please run this script with sudo"
+  exit 1
+fi
+
+# Usage instructions
+if [[ $# -lt 1 ]]; then
+  #$0 holds the name of the script, in this case ./setup.sh, to give instruction to the user on how to properly use the script
+  echo "Usage: $0 -i to install packages, -c to clone config files, -s to create symbolic links"
+  exit 1
+fi
+
+# Parse command-line options
+while getopts ":ics" opt; do
+  case ${opt} in
+    i)
+      # Call the install packages script
+      echo "Installing packages..."
+      ./install-packages
+      ;;
+    c)
+      # Clones the configuration files from gitlab to home directory
+      echo "Cloning configuration files..."
+      git clone https://gitlab.com/cit2420/2420-as2-starting-files.git "$home_user/config-files"
+      ;;
+    s)
+      # Call the create symbolic links script
+      echo "Creating symbolic links"
+      ./create-symlinks
+      ;;
+    \?)
+      # handles options that are not part of the the getopts with error checks for proper usage
+      echo "Invalid option: -$OPTARG"
+      echo "Usage: $0 -i to install packages, -c to clone config files, -s to create symbolic links"
+      exit 1
+      ;;
+  esac
+done
+
