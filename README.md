@@ -4,13 +4,22 @@ This assignment involves two small projects that involve using scripts to instal
 
 ## Project 1: Configuration Scripts
 
-This project consists of four files: the install-packages script, a plain-text file with a list of packages, the symbolic-links script, and the main config-script. The goal was to install packages and create symbolic links between configuration files stored in a remote repository and the user's home directory.
+This project includes four files: the install-packages script, a list of packages text file, the create-symlinks script, and the config-setup script. 
 
 ### install-packages Script
-This script installs packages by reading a list of user-defined packages from the packages file. It stores the packages in an array and then uses a for loop to install each package.
+This script installs packages by reading a list of packages from the packages file.
 
-### symbolic-links Script
-This script creates symbolic links. It ensures that the user’s home directory is correctly set, using sudo, so that it doesn’t default to /root when running with elevated privileges.
+### create-symlinks Script
+This script creates symbolic links. 
 
-### config-script Script
-The main script, config-script, calls the install-packages and symbolic-links scripts when needed. It first checks if the script is run with sudo, then checks for any supplied options. If no options are given, it informs the user of the required flags. The script uses getopts to handle the options, which include installing packages, creating symbolic links, and cloning a remote repository.
+### config-setup Script
+This script calls upon the other 2 scripts when needed to install the packages, create symbolic links, and cloning a remote repository.
+
+Run the config-setup.sh with sudo and supply it with -c, -i, -s
+
+# Project 2: New User Script
+This project contains a script that can add new users with a shell and password, then add them to groups.
+
+usage for the script is given as ```sudo ./new-user-script -u <username> -s <shell> -g <group1,group2,...>``` 
+be sure to supply the <> fields with the actual names
+
