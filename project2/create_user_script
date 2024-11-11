@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# Ensure the script is run as root; exit if not.
+if [ "$(id -u)" -ne 0 ]; then
+  echo "Please run as root."
+  exit 1
+fi
+
+# Function to display usage information
+usage() {
+  echo "Usage: $0 -u username -s shell [-g groups]"
+  exit 1
+}
+
+# Initialize variables for user input
+USERNAME=""
+# /bin/bash will be default if user doesn't indicate a shell
+SHELL="/bin/bash"
+GROUPS=""
+
+# option u for username, s for shell, g for groups, with erroring check option
+while getopts ":u:s:g:" opt; do
+  case $opt in
+    u) USERNAME="$OPTARG"  # for the username
+    ;;
+    s) SHELL="$OPTARG"     # for the shell
+    ;;
+    g) GROUPS="$OPTARG"    # for additional groups
+    ;;
+    \?) usage              # Display usage if invalid option provided
+    ;;
+  esac
+done
+
+# -z check if length isn't 0 and username and shell are given
+if [ -z "$USERNAME" ]; then
+  echo "Username must be given."
+  #invokes usage
+  usage
+fi
+
+# Set default shell if not provided
+if [ -z "$SHELL" ]; then
+    SHELL="/bin/bash"
+fi
+
+# Creates a home directory for the new user, Specifies the user's login shell and adds the user to additional groups given by GROUPS variable
+if ! useradd -m -s "$SHELL" -G "$GROUPS" "$USERNAME"; then
+  echo "Failed to create user $USERNAME."
+  exit 1
+fi
+
+# Prompt for and set the user's password
+echo "Set password for $USERNAME:"
+if ! passwd "$USERNAME"; then
+  echo "Failed to set password for $USERNAME."
+  exit 1
+fi
+
+# Add user to additional groups
+if [ -n "$GROUPS" ]; then
+    for group in $(echo "$GROUPS" | tr ',' ' '); do
+        if ! usermod -a -G "$group" "$USERNAME"; then
+            echo "Failed to add $USERNAME to group $group."
+            exit 1
+        fi
+    done
+fi
+
+# Copy files from /etc/skel to the new home directory
+if ! cp -r /etc/skel/. "/home/$USERNAME/"; then
+  echo "Failed to copy skeleton files."
+  exit 1
+fi
+
+# Change ownership of the home directory to the new user
+if ! chown -R "$USERNAME:$USERNAME" "/home/$USERNAME"; then
+  echo "Failed to set ownership for /home/$USERNAME."
+  exit 1
+fi
+
+# Confirm successful user creation
+echo "User $USERNAME created."
