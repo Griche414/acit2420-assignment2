@@ -8,6 +8,7 @@ fi
 
 # Define the directory where the configuration files are located if they are cloned in the home directory
 # eval is a command that ensures the shell correctly expands ~$SUDO_USER to the user's home directory
+# https://stackoverflow.com/questions/11065077/the-eval-command-in-bash-and-its-typical-uses
 home_user=$(eval echo ~$SUDO_USER)
 config_dir="$home_user/config-files"
 
