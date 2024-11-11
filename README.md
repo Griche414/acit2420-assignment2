@@ -1,4 +1,5 @@
 # acit2420-assignment2
+Lucas Huang A01363806
 
 This assignment involves two small projects that involve using scripts to install packages along with their configurations, and another script to create a new user.
 
